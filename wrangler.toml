@@ -5,7 +5,7 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "offies-hoties-db"
-database_id = "REPLACE_AFTER_MCP_PROVISION"
+database_id = "831b73f5-c580-4f62-9cfa-932bdf956f96"
 
 # Production env vars (set via Cloudflare dashboard or `wrangler pages secret put`):
 #   APP_PIN_HASH         SHA-256 hex digest of the app PIN
