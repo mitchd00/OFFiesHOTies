@@ -53,6 +53,40 @@ npm run typecheck   # tsc --noEmit
 npm run build       # production build
 ```
 
+## Deploy (Cloudflare Pages)
+
+The D1 database `offies-hoties-db` is already provisioned and seeded
+with the seven agents. The `database_id` in `wrangler.toml` points to
+it. Remaining steps to ship:
+
+1. **Create a Pages project** connected to this repo's GitHub:
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Root directory: `/`
+2. **Bind D1 to the Pages project**: in Pages → Settings → Functions →
+   D1 database bindings, add `DB` → `offies-hoties-db`.
+3. **Set production secrets**:
+
+   ```bash
+   npx wrangler pages secret put APP_PIN_HASH
+   npx wrangler pages secret put SESSION_SECRET
+   # optional:
+   npx wrangler pages secret put SESSION_TTL_HOURS
+   ```
+
+4. **Set the Google Maps key as a build-time env var** (Pages →
+   Settings → Environment variables → Production):
+   `VITE_GOOGLE_MAPS_API_KEY` = your key. Restrict the key in Google
+   Cloud Console to the Pages domain (e.g.
+   `https://offies-hoties.pages.dev/*`).
+5. **Deploy**: merge the PR. Pages will build and deploy automatically.
+
+If you ever need to re-apply the schema after a wipe:
+
+```bash
+npx wrangler d1 execute offies-hoties-db --remote --file schema/0001_init.sql
+```
+
 ## Roadmap
 
 | Ver | Name | Status |
