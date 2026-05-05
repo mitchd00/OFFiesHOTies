@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-bg-light text-text-dark;
+    -webkit-font-smoothing: antialiased;
+  }
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white border border-divider rounded-card shadow-card;
+  }
+  .stale {
+    opacity: 0.6;
+  }
+  .chip {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm border border-divider bg-white text-text-dark;
+  }
+  .chip-active {
+    @apply bg-brand-black text-white border-brand-black;
+  }
+}
