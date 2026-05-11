@@ -70,7 +70,7 @@ value — the referrer restriction is what keeps it safe.
 In the Cloudflare dashboard → Workers & Pages → **Create application**
 → **Pages** → **Connect to Git**:
 
-- **Repository**: `mitchd00/offieshoties`
+- **Repository**: `mitchd00/OFFiesHOTies`
 - **Production branch**: `Mitchd00/OffiesandHoties` (the default
   branch in this repo)
 - **Build command**: `npm run build`
@@ -86,17 +86,20 @@ expected.
 
 ---
 
-## 6. Bind the D1 database
+## 6. Verify the D1 binding
 
-Pages project → **Settings** → **Functions** → **D1 database
-bindings** → Add:
+The binding is declared in `wrangler.toml` (`DB` →
+`offies-hoties-db`, id `831b73f5-c580-4f62-9cfa-932bdf956f96`), so a
+Pages project connected to this repo picks it up automatically on
+build.
+
+Open Pages project → **Settings** → **Functions** → **D1 database
+bindings** and confirm `DB` is listed for Production (and Preview if
+you plan to use preview deploys). If it's missing, add it manually:
 
 - **Variable name**: `DB` (must match exactly — the code reads
   `env.DB`)
 - **D1 database**: `offies-hoties-db`
-
-Set this for **Production** (and Preview if you plan to use preview
-deploys).
 
 ---
 
@@ -121,17 +124,16 @@ Environment variables → Production → **Encrypt** each one.
 
 ---
 
-## 8. Merge PR #1 and trigger a real build
+## 8. Trigger a build
 
-PR: https://github.com/mitchd00/OFFiesHOTies/pull/1
+The v1 code is already merged to `Mitchd00/OffiesandHoties` (PR #1),
+so connecting the Pages project in step 5 should kick off the first
+build automatically. If it didn't, push any commit to the production
+branch — or hit **Retry deployment** in the Pages dashboard once
+steps 6 and 7 are done.
 
-- Mark "Ready for review" (it's currently a draft)
-- Merge it once approved
-- Pages will auto-deploy on push to `Mitchd00/OffiesandHoties`
-
-You can also redeploy from the Pages dashboard at any point if a
-secret change needs a refresh — secrets are read at request time so
-usually no redeploy is needed.
+Secrets are read at request time, so rotating a secret usually does
+not require a redeploy.
 
 ---
 
