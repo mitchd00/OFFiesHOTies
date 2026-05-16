@@ -17,21 +17,37 @@ interface Props {
 
 let mapsLoadPromise: Promise<typeof google> | null = null;
 
+async function resolveApiKey(): Promise<string> {
+  const buildKey = (import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? '') as string;
+  if (buildKey) return buildKey;
+  const res = await fetch('/api/config', { credentials: 'include' });
+  if (!res.ok) throw new Error('Address autocomplete is not configured yet');
+  const body = (await res.json()) as { google_maps_api_key?: string };
+  if (!body.google_maps_api_key) throw new Error('Address autocomplete is not configured yet');
+  return body.google_maps_api_key;
+}
+
 function loadGoogleMaps(): Promise<typeof google> {
   if (typeof window === 'undefined') return Promise.reject(new Error('No window'));
   if (window.google?.maps?.places) return Promise.resolve(window.google);
   if (mapsLoadPromise) return mapsLoadPromise;
-  const key = (import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? '') as string;
-  if (!key) return Promise.reject(new Error('Missing VITE_GOOGLE_MAPS_API_KEY'));
-  mapsLoadPromise = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&libraries=places&v=weekly`;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => resolve(window.google);
-    script.onerror = () => reject(new Error('Failed to load Google Maps'));
-    document.head.appendChild(script);
-  });
+  mapsLoadPromise = resolveApiKey()
+    .then(
+      (key) =>
+        new Promise<typeof google>((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&libraries=places&v=weekly`;
+          script.async = true;
+          script.defer = true;
+          script.onload = () => resolve(window.google);
+          script.onerror = () => reject(new Error('Failed to load Google Maps'));
+          document.head.appendChild(script);
+        }),
+    )
+    .catch((e) => {
+      mapsLoadPromise = null;
+      throw e;
+    });
   return mapsLoadPromise;
 }
 

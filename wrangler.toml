@@ -8,7 +8,9 @@ database_name = "offies-hoties-db"
 database_id = "831b73f5-c580-4f62-9cfa-932bdf956f96"
 
 # Production env vars (set via Cloudflare dashboard or `wrangler pages secret put`):
-#   APP_PIN_HASH         SHA-256 hex digest of the app PIN
-#   SESSION_SECRET       32-byte random hex string
-#   SESSION_TTL_HOURS    integer, defaults to 8 if unset
-#   VITE_GOOGLE_MAPS_API_KEY  Google Maps JS + Places key (build-time)
+#   APP_PIN_HASH            SHA-256 hex digest of the app PIN
+#   SESSION_SECRET          32-byte random hex string
+#   SESSION_TTL_HOURS       integer, defaults to 8 if unset
+#   GOOGLE_MAPS_API_KEY     Google Maps JS + Places key, served to the client by /api/config
+# (Optional, local dev only — bakes the key into the build:)
+#   VITE_GOOGLE_MAPS_API_KEY  if set at build time, used directly without hitting /api/config

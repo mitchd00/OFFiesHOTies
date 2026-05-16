@@ -7,6 +7,7 @@ interface Env {
   APP_PIN_HASH: string;
   SESSION_SECRET: string;
   SESSION_TTL_HOURS?: string;
+  GOOGLE_MAPS_API_KEY?: string;
 }
 
 const SESSION_COOKIE = 'oh_session';
@@ -522,6 +523,11 @@ export const onRequest: PagesFunction<Env> = async ({ request, env }) => {
   const auth = await authOrError(request, env);
   if (auth instanceof Response) return auth;
   const { agent } = auth;
+
+  if (path[0] === 'config') {
+    if (request.method !== 'GET') return err(405, 'Method not allowed');
+    return json({ google_maps_api_key: env.GOOGLE_MAPS_API_KEY ?? null });
+  }
 
   if (path[0] === 'offies') {
     if (!path[1]) {

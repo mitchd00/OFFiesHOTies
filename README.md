@@ -31,7 +31,8 @@ Cloudflare Pages secrets):
 | `APP_PIN_HASH` | SHA-256 hex digest of the team PIN |
 | `SESSION_SECRET` | 32-byte random hex string for HMAC session signing |
 | `SESSION_TTL_HOURS` | Optional, defaults to 8 |
-| `VITE_GOOGLE_MAPS_API_KEY` | Google Maps JS + Places key (build-time, public) |
+| `GOOGLE_MAPS_API_KEY` | Google Maps JS + Places key. Served at runtime via `/api/config` to authenticated sessions — rotate via Pages secrets, no rebuild needed. Restrict the key in Google Cloud to the Pages domain. |
+| `VITE_GOOGLE_MAPS_API_KEY` | Optional, local dev only. If set, the build bakes it in and skips the `/api/config` round-trip. |
 
 Generate the PIN hash:
 

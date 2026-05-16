@@ -60,8 +60,14 @@ That 64-character hex string is `SESSION_SECRET`.
 4. Under **API restrictions** select **Restrict key** and tick only
    Maps JavaScript API + Places API.
 
-That key is `VITE_GOOGLE_MAPS_API_KEY`. It's a public, build-time
-value — the referrer restriction is what keeps it safe.
+That key is `GOOGLE_MAPS_API_KEY`. It's stored as a Pages secret and
+served to the client at runtime via `/api/config` (session-gated, so
+random scrapers can't grab it without the team PIN). The referrer
+restriction in Google Cloud Console is what really keeps it safe —
+the key being client-visible is inherent to the Maps JS API.
+
+To rotate it later: set a new value via the Pages dashboard or
+`wrangler pages secret put GOOGLE_MAPS_API_KEY`. No rebuild needed.
 
 ---
 
@@ -77,8 +83,8 @@ In the Cloudflare dashboard → Workers & Pages → **Create application**
 - **Build output directory**: `dist`
 - **Root directory**: leave blank (or `/`)
 - **Environment variables (build-time, Production)**:
-  - `VITE_GOOGLE_MAPS_API_KEY` = the key from step 4
   - `NODE_VERSION` = `20`
+  (Maps key is set as a runtime secret in step 7, not at build time.)
 
 Save and let the first build run — it will fail with "binding DB not
 found" or 500s on `/api/*` until you finish steps 6 and 7. That's
@@ -114,6 +120,9 @@ npx wrangler pages secret put SESSION_SECRET --project-name offies-hoties
 
 # Optional, default is 8 hours if you skip this:
 npx wrangler pages secret put SESSION_TTL_HOURS --project-name offies-hoties
+
+# Runtime Maps key (read by /api/config and forwarded to the client):
+npx wrangler pages secret put GOOGLE_MAPS_API_KEY --project-name offies-hoties
 ```
 
 Alternative: do it through the Pages dashboard → Settings →
